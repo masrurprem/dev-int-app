@@ -18,6 +18,10 @@ const userSchema = new mongoose.Schema(
         }
       },
     },
+    password: {
+      type: String,
+      required: true,
+    },
     tokens: [
       {
         token: {
@@ -31,6 +35,16 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+// password hashing middleware: pre-Hook save
+userSchema.pre("save", async function (next) {
+  const user = this;
+  if (user.isModified("password")) {
+    // password hash
+    user.password = await bcrypt.hash(user.password, 10);
+  }
+  next();
+});
 
 // user model
 const userModel = new mongoose.model("userModel", userSchema);

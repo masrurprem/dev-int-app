@@ -1,8 +1,12 @@
 const express = require("express");
 const app = express();
 const database = require("./database/db");
-
+const userRoute = require("./routes/userRouter");
+const postRoute = require("./routes/postRouter");
+//
 app.use(express.json());
+app.use("/user", userRoute);
+app.use("/post", postRoute);
 
 const port = process.env.PORT || 3000;
 app.listen(port, (err) => {

@@ -15,6 +15,15 @@ postRoute.get("/all", async (req, res) => {
 });
 
 //
+postRoute.post("/createNew", async (req, res) => {
+  const newBlog = new postModel(req.body);
+  try {
+    await newBlog.save();
+    res.status(200).send("blog saved");
+  } catch (e) {
+    res.status(404).send("error creating blog", e);
+  }
+});
 
 // exports
 module.exports = postRoute;

@@ -38,11 +38,45 @@ postRoute.get("/post", auth, async (req, res) => {
     //const task = await postModel.find({ author: authUser._id });
     //way-2: using populate
     await authUser.populate("blogs");
-    res.status(500).send(authUser.blogs);
+    res.status(200).send(authUser.blogs);
   } catch (e) {
-    res.status(404).send(e);
+    res.status(500).send(e);
   }
 });
 
+//auth User reads specific post: get by id
+postRoute.get("/post/:id", auth, async (req, res) => {
+  const _id = req.params.id;
+  try {
+    const post = await postModel.findOne({ _id, author: req.user._id });
+    // still no relevant user post return error response
+    if (!post) {
+      return res.status(404).send();
+    }
+    res.status(200).send(post);
+  } catch (e) {
+    res.status(500).send(e);
+  }
+});
+
+//update a post by auth user: update by id
+postRoute.patch("/post/:id", auth, async (req, res) => {});
+
+// auth user deletes a post
+postRoute.delete("/post/:id", auth, async (req, res) => {
+  const _id = req.params.id;
+  try {
+    const deletedPost = await postModel.findOneAndDelete({
+      _id,
+      author: req.user._id,
+    });
+    if (!deletedPost) {
+      return res.status(404).send();
+    }
+    res.status(200).send(deletedPost);
+  } catch (e) {
+    res.status(500).send();
+  }
+});
 // exports
 module.exports = postRoute;

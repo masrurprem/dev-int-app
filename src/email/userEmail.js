@@ -12,4 +12,4 @@ const sendWelcomeMail = (email, name) => {
   });
 };
 
-module.exports = { sendWelcomeMail };
+module.exports = sendWelcomeMail;

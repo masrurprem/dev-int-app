@@ -56,5 +56,7 @@ userRoute.post("/logoutAll", auth, async (req, res) => {
   }
 });
 
+//getting user profile: later to be completed
+
 // export
 module.exports = userRoute;

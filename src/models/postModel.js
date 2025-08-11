@@ -28,6 +28,11 @@ const postSchema = new mongoose.Schema({
   remarks: {
     type: String,
   },
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "userModel",
+  },
 });
 
 //post model

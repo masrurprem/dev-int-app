@@ -39,6 +39,12 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+//virtual property for referencing blogPosts to the user
+userSchema.virtual("blogs", {
+  ref: "postModel",
+  localField: "_id",
+  foreignField: "author",
+});
 
 // password hashing middleware: pre-Hook save
 userSchema.pre("save", async function (next) {

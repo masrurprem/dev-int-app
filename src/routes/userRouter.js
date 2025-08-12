@@ -87,9 +87,11 @@ userRoute.post("/logoutAll", auth, async (req, res) => {
 // delete user profile
 userRoute.delete("/me", auth, async (req, res) => {
   try {
-    await req.user.remove();
-    res.send(req.user);
+    await req.user.deleteOne();
+    //res.send(req.user);
+    res.send("user profile deleted");
   } catch (e) {
+    console.log(e);
     res.status(500).send(e);
   }
 });

@@ -33,6 +33,33 @@ userRoute.post("/login", async (req, res) => {
   }
 });
 
+//getting user profile: later to be completed
+userRoute.get("/profile", auth, async (req, res) => {
+  // auth user just gets own profile
+  res.send(req.user);
+});
+
+// update user route
+userRoute.post("/me", auth, async (req, res) => {
+  const updates = Object.keys(req.body);
+  const allowedUpdates = ["name", "email", "password"];
+  const isValidOperation = updates.every((update) =>
+    allowedUpdates.includes(update)
+  );
+
+  if (!isValidOperation) {
+    return res.status(400).send("invalid updates..try again carefully");
+  }
+  try {
+    updates.forEach((updateKey) => (req.user[updateKey] = req.body[updateKey]));
+    // save updated user to database
+    await req.user.save();
+    res.status(200).send(req.user);
+  } catch (e) {
+    res.status(500).send();
+  }
+});
+
 //user logout route
 userRoute.post("/logout", auth, async (req, res) => {
   try {
@@ -55,34 +82,8 @@ userRoute.post("/logoutAll", auth, async (req, res) => {
     res.status(404).send();
   }
 });
-//getting user profile: later to be completed
-userRoute.get("/profile", auth, async (req, res) => {
-  // auth user just gets own profile
-  res.send(req.user);
-});
 
-// update user route
-userRoute.post("/me", auth, async (req, res) => {
-  const updates = Object.keys(req.body);
-  const allowedUpdates = ["name", "email", "password"];
-  const isValidOperation = updates.every((update) =>
-    allowedUpdates.includes(update)
-  );
-
-  if (!isValidOperation) {
-    return res.status(400).send("invalid updates");
-  }
-  try {
-    updates.forEach((updateKey) => (req.user[updateKey] = req.body[updateKey]));
-    // save updated user to database
-    await req.user.save();
-    res.status(200).send(req.user);
-  } catch (e) {
-    res.status(500).send();
-  }
-});
-
-// delete user profile route
+// delete user profile
 userRoute.delete("/me", auth, async (req, res) => {
   try {
     await req.user.remove();

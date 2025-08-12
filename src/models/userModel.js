@@ -58,12 +58,17 @@ userSchema.pre("save", async function (next) {
 
 // user instance token generation function
 userSchema.methods.generateAuthToken = async function () {
-  const user = this;
-  const token = jwt.sign({ email: user.email }, process.env.signature);
-  // save token to user token array of obj
-  user.tokens = user.tokens.concat({ token: token });
-  await user.save();
-  return token;
+  try {
+    const user = this;
+    const token = jwt.sign({ email: user.email }, process.env.signature);
+    // save token to user token array of obj
+    user.tokens = user.tokens.concat({ token: token });
+    await user.save();
+    return token;
+  } catch (err) {
+    console.log("token saving failed", err);
+    throw new Error("token generation and save failed");
+  }
 };
 
 // user login function by credentials

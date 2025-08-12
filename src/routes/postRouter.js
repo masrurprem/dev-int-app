@@ -8,9 +8,10 @@ postRoute.get("/all", async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 3;
   const skip = (page - 1) * limit;
-  // for sorting
 
+  // for sorting
   const sortOps = { createdAt: -1 }; // sort by newest post
+
   //filtering post by job verdict
   const filterObj = {};
   if (req.query.verdict) {

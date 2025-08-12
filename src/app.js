@@ -15,5 +15,5 @@ app.listen(port, (err) => {
   if (err) {
     console.log("could not connect to server");
   }
-  console.log("server started on port", port);
+  console.log(`server on the run at: http//:localhost:${port}`);
 });

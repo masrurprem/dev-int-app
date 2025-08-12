@@ -30,7 +30,7 @@ postRoute.post("/createNew", auth, async (req, res) => {
   }
 });
 
-//authenticated user gets own posts to read
+//authenticated user gets own posts to read: all posts
 postRoute.get("/post", auth, async (req, res) => {
   const authUser = req.user;
   try {
@@ -60,7 +60,40 @@ postRoute.get("/post/:id", auth, async (req, res) => {
 });
 
 //update a post by auth user: update by id
-postRoute.patch("/post/:id", auth, async (req, res) => {});
+postRoute.patch("/post/:id", auth, async (req, res) => {
+  const updates = Object.keys(req.body);
+  const allowedUpdates = [
+    "company",
+    "position",
+    "title",
+    "verdict",
+    "content",
+    "remarks",
+  ];
+  const isValidOperation = updates.every((update) => {
+    return allowedUpdates.includes(update);
+  });
+  if (!isValidOperation) {
+    return res.status(400).send("invalid updates");
+  }
+  // operations are valid so update now
+  try {
+    const post = await postModel.findOne({
+      _id: req.params.id,
+      author: req.user._id,
+    });
+    if (!post) {
+      res.status(404).send();
+    }
+    // valid post: so update each given attribute
+    updates.forEach((updateKey) => (post[updateKey] = req.body[updateKey]));
+    //save the updated+extant info to database
+    await post.save();
+    res.status(200).send();
+  } catch (e) {
+    res.status(500).send(e);
+  }
+});
 
 // auth user deletes a post
 postRoute.delete("/post/:id", auth, async (req, res) => {

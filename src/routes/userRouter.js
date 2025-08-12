@@ -56,7 +56,11 @@ userRoute.post("/logoutAll", auth, async (req, res) => {
   }
 });
 
+// update user route
+
 //getting user profile: later to be completed
+
+// delete user profile route
 
 // export
 module.exports = userRoute;

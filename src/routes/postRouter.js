@@ -11,20 +11,26 @@ postRoute.get("/all", async (req, res) => {
   // for sorting
 
   const sortOps = { createdAt: -1 }; // sort by newest post
+  //filtering post by job verdict
+  const filterObj = {};
+  if (req.query.verdict) {
+    filterObj.verdict = req.query.verdict;
+  }
 
   try {
     const blogs = await postModel
-      .find({})
+      .find(filterObj)
       .populate("author")
       .sort(sortOps)
       .skip(skip)
       .limit(limit);
     if (!blogs) {
-      res.status(404).send("no posts available");
+      res.status(404).send("no posts available on such");
     }
     res.status(200).send(blogs);
   } catch (e) {
-    res.status(400).send("error getting blog posts");
+    //console.log(e);
+    res.status(500).send("error getting blog posts");
   }
 });
 

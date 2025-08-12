@@ -13,7 +13,7 @@ userRoute.post("/register", async (req, res) => {
     ///save user to database collection and send welcome email
     await newUser.save();
     sendWelcomeMail(newUser.email, newUser.name);
-    res.status(200).send("user successfully registered");
+    res.status(200).send(newUser);
   } catch (err) {
     //console.log(err);
     res.status(400).send("unable to register..try again");

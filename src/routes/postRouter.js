@@ -144,5 +144,6 @@ postRoute.delete("/post/:id", auth, async (req, res) => {
     res.status(500).send();
   }
 });
+
 // exports
 module.exports = postRoute;

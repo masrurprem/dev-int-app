@@ -6,7 +6,7 @@ require("dotenv").config();
 const auth = async (req, res, next) => {
   try {
     //get token
-    const token = req.header("Authorization").replace("Bearer", "");
+    const token = req.header("Authorization").replace("Bearer ", "");
     // get payload and verify token
     const payload = jwt.verify(token, process.env.signature);
     // get the user
@@ -22,6 +22,7 @@ const auth = async (req, res, next) => {
     req.token = token;
     next();
   } catch (e) {
+    console.log(e);
     res.status(400).send("please authenticate");
   }
 };

@@ -64,10 +64,11 @@ userRoute.post("/me", auth, async (req, res) => {
 userRoute.post("/logout", auth, async (req, res) => {
   try {
     req.user.tokens = req.user.tokens.filter((tokenObj) => {
-      return tokenObj.token !== req.user.token;
+      return tokenObj.token !== req.token;
     });
     await req.user.save();
-    res.status(200).send("You're successfully logged out!");
+    //res.status(200).send("You're successfully logged out!");
+    res.status(200).send(req.user);
   } catch (e) {
     res.status(404).send();
   }

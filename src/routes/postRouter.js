@@ -4,8 +4,21 @@ const auth = require("../middlewares/auth");
 
 // getting all the blogs: the public route
 postRoute.get("/all", async (req, res) => {
+  // necessary for pagination
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 3;
+  const skip = (page - 1) * limit;
+  // for sorting
+
+  const sortOps = { createdAt: -1 }; // sort by newest post
+
   try {
-    const blogs = await postModel.find({});
+    const blogs = await postModel
+      .find({})
+      .populate("author")
+      .sort(sortOps)
+      .skip(skip)
+      .limit(limit);
     if (!blogs) {
       res.status(404).send("no posts available");
     }
@@ -33,11 +46,24 @@ postRoute.post("/createNew", auth, async (req, res) => {
 //authenticated user gets own posts to read: all posts
 postRoute.get("/post", auth, async (req, res) => {
   const authUser = req.user;
+  //pagination
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 3;
+  const skip = (page - 1) * limit;
+  //sorting
+  const sortOps = { createdAt: -1 };
   try {
     //way-1:
     //const task = await postModel.find({ author: authUser._id });
     //way-2: using populate
-    await authUser.populate("blogs");
+    await authUser.populate({
+      path: "blogs",
+      options: {
+        skip: skip,
+        limit: limit,
+        sort: sortOps,
+      },
+    });
     res.status(200).send(authUser.blogs);
   } catch (e) {
     res.status(500).send(e);

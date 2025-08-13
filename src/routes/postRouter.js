@@ -6,7 +6,7 @@ const auth = require("../middlewares/auth");
 postRoute.get("/all", async (req, res) => {
   // necessary for pagination
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 3;
+  const limit = parseInt(req.query.limit) || 5;
   const skip = (page - 1) * limit;
 
   // for sorting
@@ -21,7 +21,7 @@ postRoute.get("/all", async (req, res) => {
   try {
     const blogs = await postModel
       .find(filterObj)
-      .populate("author")
+      .populate("author", "name")
       .sort(sortOps)
       .skip(skip)
       .limit(limit);
@@ -142,6 +142,17 @@ postRoute.delete("/post/:id", auth, async (req, res) => {
     res.status(200).send(deletedPost);
   } catch (e) {
     res.status(500).send();
+  }
+});
+
+//user deletes all of his posts altogether
+postRoute.delete("/deleteAll", auth, async (req, res) => {
+  try {
+    await postModel.deleteMany({ author: req.user._id });
+    res.status(200).send("you have deleted all your documents");
+  } catch (err) {
+    console.log("error deleting data", err);
+    res.status(500).send("error deleting posts");
   }
 });
 

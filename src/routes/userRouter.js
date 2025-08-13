@@ -67,8 +67,8 @@ userRoute.post("/logout", auth, async (req, res) => {
       return tokenObj.token !== req.token;
     });
     await req.user.save();
-    //res.status(200).send("You're successfully logged out!");
-    res.status(200).send(req.user);
+    res.status(200).send("You're successfully logged out!");
+    // res.status(200).send(req.user);
   } catch (e) {
     res.status(404).send();
   }
